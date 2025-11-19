@@ -1,4 +1,3 @@
-\
 
 
 #ifndef MULTISCENES_HPP
@@ -11,7 +10,9 @@
 #include <cmath>
 
 class WelcomeScene : public Scene {
+
 private:
+
     sf::Font font;
     sf::Text title;
 
@@ -29,6 +30,7 @@ private:
     SceneID next = NONE;   
 
 public:
+
     WelcomeScene() {
 
         // Load font
@@ -45,12 +47,12 @@ public:
 
         // Background gradient
         gradient.setSize({700, 600});
-        gradient.setFillColor(sf::Color(40, 20, 90));
+        gradient.setFillColor(sf::Color(40, 20, 90));         //purple background gradient
 
         // Particles
         for (int i = 0; i < 12; i++) {
             sf::CircleShape c(5 + rand() % 5);
-            c.setFillColor(sf::Color(255, 255, 255, 40));
+            c.setFillColor(sf::Color(255, 255, 255, 40));         //white with 40% transparency 
             c.setPosition(rand() % 700, rand() % 600);
             particles.push_back(c);
         }
@@ -62,66 +64,96 @@ public:
 
         // Background Music
         if (bgMusic.openFromFile("soft-piano.wav")) {
+
             bgMusic.setLoop(true);
             bgMusic.setVolume(30);
             bgMusic.play();
+
         }
+
+
     }
 
     void handleEvents(sf::RenderWindow& window) {
         sf::Event event;
 
+
         while (window.pollEvent(event)) {
 
-            if (event.type == sf::Event::Closed)
+            if (event.type == sf::Event::Closed){
                 window.close();
-
-
-            if (freeBtn.isClicked(window, event)) {
-                next = FREEPLAY;                                 // triggers scene switch
             }
+                
+            if (freeBtn.isClicked(window, event)) {
+
+                next = FREEPLAY;                                 // triggers scene switch
+
+            }
+
             if (startBtn.isClicked(window, event)) {
                 next = MAINGAME;                                 // triggers scene switch
+
             }
 
             if (exitBtn.isClicked(window, event)) {
                 window.close();
+
             }
+
+
         }
 
         // Hover effects
         startBtn.setHoverColor(startBtn.isHovered(window));
         freeBtn.setHoverColor(freeBtn.isHovered(window));
         exitBtn.setHoverColor(exitBtn.isHovered(window));
+
+
     }
 
     void update() {
+
         glowTimer += 0.03f;
         float glow = 180 + std::sin(glowTimer) * 75;
-        title.setFillColor(sf::Color(glow, glow, 255));
+        title.setFillColor(sf::Color(glow, glow, 255));               //glowing title effect
+
 
         for (auto& p : particles) {
             sf::Vector2f pos = p.getPosition();
             pos.y -= 0.2f;
-            if (pos.y < -10) pos.y = 620;
+            if (pos.y < -10) pos.y = 620;                             //wrap around (Infinite)
             p.setPosition(pos);
+
         }
+
+
     }
 
     void draw(sf::RenderWindow& window) {
+
         window.draw(gradient);
 
-        for (auto& p : particles)
+        for (auto& p : particles){
             window.draw(p);
+        }
+            
 
         window.draw(title);
         startBtn.draw(window);
         freeBtn.draw(window);
         exitBtn.draw(window);
+
+
     }
 
     SceneID nextScene() override { return next; }
     void resetNextScene() override { next = NONE; }
+
 };
 
+
+
 #endif
+
+
+
